@@ -2,6 +2,24 @@
 // MAIN APPLICATION
 // ========================================
 
+createClass("AppController", {
+
+```
+start() {
+
+    console.log(
+        "WEB4 Started"
+    );
+}
+```
+
+});
+
+const app =
+new WEB4.classes.AppController();
+
+[app start]
+
 const shader = new ShaderView({
 
 ```
