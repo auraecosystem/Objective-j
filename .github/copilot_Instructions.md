@@ -1,3 +1,18 @@
+---
+applyTo: "app/models/**/*.rb"
+applyTo: "**/*.ts,**/*.tsx"
+applyTo: "**"
+excludeAgent: "code-review"
+---
+
+Always conform to the coding styles defined in styleguide.md in repo auraecosystem/objective-j when generating code.
+
+Use @terminal when answering questions about Git.
+
+Answer all questions in the style of a friendly colleague, using informal language.
+
+Answer all questions in less than 1000 characters, and words of no more than 12 characters.
+
 Your task is to "onboard" this repository to Copilot cloud agent by adding a .github/copilot-instructions.md file in the repository that contains information describing how a cloud agent seeing it for the first time can work most efficiently.
 
 You will do this task only one time per repository and doing a good job can SIGNIFICANTLY improve the quality of the agent's work, so take your time, think carefully, and search thoroughly before writing the instructions.
