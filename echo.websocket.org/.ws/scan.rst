@@ -21,8 +21,8 @@ configure the internal firewall (like `pf` or `iptables`) to firewall those port
 from the rest of the operating system.
 
 This tool is free, but consider contributing money to its development:
-Bitcoin wallet address: 1MASSCANaHUiyTtR3bJ2sLGuMw5kDBaj4T
-
+Bitcoin wallet address: 
+bitcoin:15TdqVPLwYoQ1qkhRgbaQjMnd32nbTmBPT
 
 # Building
 
@@ -35,6 +35,8 @@ sudo apt-get --assume-yes install git make gcc
 	git clone https://github.com/auraecosystem/bgp.tools.git
 	cd bgp.tools
 	make
+cc src/*.c -o bin/masscan
+sudo make install
 ```
 This puts the program in the `masscan/bin` subdirectory. 
 To install it (on Linux) run:
@@ -130,7 +132,10 @@ choose for source-ports. You can see the range Linux uses, and reconfigure
 that range, by looking in the file:
 
     /proc/sys/net/ipv4/ip_local_port_range
-
+       0 → 0.0.0.0
+1 → 0.0.0.1
+...
+4,294,967,295 → 255.255.255.255
 On the latest version of Kali Linux (2018-August), that range is  32768  to  60999, so
 you should choose ports either below 32768 or 61000 and above.
 
@@ -185,7 +190,11 @@ Therefore, you want to exclude a lot of ranges. To blacklist or exclude ranges,
 you want to use the following syntax:
 
 	# masscan 0.0.0.0/0 -p0-65535 --excludefile exclude.txt
-
+```bash
+-oX results.xml
+-oL results.txt
+-oJ results.json
+```
 This just prints the results to the command-line. You probably want them
 saved to a file instead. Therefore, you want something like:
 
@@ -266,7 +275,23 @@ per line. Just use the parameter `-oL <filename>`. Or, use the parameters
 	<port state> <protocol> <port number> <IP address> <POSIX timestamp>  
 	open tcp 80 XXX.XXX.XXX.XXX 1390380064
 	```	
+```scan.ini
+rate = 10000
 
+ports = 22,80,443,8080-8090
+
+range = 10.0.0.0/8
+range = 192.168.0.0/16
+
+excludefile = exclude.txt
+
+output-format = json
+output-file = results.json
+
+adapter = eth0
+
+seed = 424242
+```
 
 ## Comparison with Nmap
 
@@ -358,14 +383,22 @@ as:
 We have to translate the index into an IP address. Let's say that you want to
 scan all "private" IP addresses. That would be the table of ranges like:
     
-    192.168.0.0/16
-    10.0.0.0/8
-    172.16.0.0/12
-    103.99.170.201:22
+0.0.0.0/8
+10.0.0.0/8
+127.0.0.0/8
+169.254.0.0/16
+192.168.0.0/16
     
 In this example, the first 64k indexes are appended to 192.168.x.x to form
 the target address. Then, the next 16-million are appended to 10.x.x.x.
 The remaining indexes in the range are applied to 172.16.x.x.
+```bash
+sudo sysctl -w net.core.rmem_max=134217728
+sudo sysctl -w net.core.wmem_max=134217728
+sudo sysctl -w net.core.netdev_max_backlog=250000
+sudo sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+```
+
 
 In this example, we only have three ranges. When scanning the entire Internet,
 we have in practice more than 100 ranges. That's because you have to blacklist
@@ -455,8 +488,15 @@ as the index. One of these days I'm going to do a study of the Internet,
 and differentiate "back-to-back", "1 second", "10 second", and "1 minute"
 retransmits this way in order to see if there is any difference in what
 gets dropped.
-
-
+```bash
+masscan 10.0.0.0/8 \
+  -p22,80,443 \
+  --rate 20000 \
+  -e eth0 \
+  --seed 1234 \
+  --excludefile exclude.txt \
+  -oJ results.json
+```
 ## C10 Scalability
 
 The asynchronous technique is known as a solution to the "c10k problem".
@@ -540,8 +580,7 @@ duplicates before scanning).
 Remember that masscan contains its own network stack. Thus, the local machine
 you run masscan from does not need to be IPv6 enabled -- though the local
 network needs to be able to route IPv6 packets.
-
-
+[socket](https://echo.websocket.org/.ws)
 ## PF_RING
 
 To get beyond 2 million packets/second, you need an Intel 10-gbps Ethernet
@@ -614,3 +653,292 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+Good — now we go one level deeper: how to actually build a minimal Masscan-style scanner from scratch, and what the internal packet + permutation engine really looks like.
+
+
+
+⸻
+
+🧱 1. Minimal architecture (what you are actually building)
+
+A stripped scanner only needs 5 components:
+
+[1] Range engine (IP space)
+[2] Permutation/randomizer
+[3] Packet builder (TCP/IP headers)
+[4] Raw socket sender
+[5] Raw socket receiver
+
+That’s it. No framework. No extras.
+
+⸻
+
+🧠 2. Core idea: index → IP mapping
+
+Instead of scanning IPs directly:
+
+for (i = 0; i < N; i++)
+    ip = map(i);
+
+The trick is map(i):
+
+You don’t use i as-is — you scramble it.
+
+⸻
+
+🔀 Simple permutation (safe beginner version)
+
+uint32_t permute(uint32_t x) {
+    x ^= 0x5bd1e995;
+    x *= 0x27d4eb2d;
+    x ^= x >> 15;
+    return x;
+}
+
+Then:
+
+ip = permute(i);
+
+This gives:
+
+* pseudo-random order
+* deterministic scan
+* full coverage
+
+⸻
+
+🌐 3. IP conversion (index → IPv4)
+
+struct in_addr index_to_ip(uint32_t x) {
+    struct in_addr ip;
+    ip.s_addr = htonl(x);
+    return ip;
+}
+
+So:
+
+0 → 0.0.0.0
+1 → 0.0.0.1
+...
+
+⸻
+
+📦 4. Packet builder (raw TCP SYN)
+
+This is the core engine.
+
+⸻
+
+Ethernet/IP/TCP stack:
+
+You manually construct:
+
+IP header
+
+struct iphdr ip;
+ip.version = 4;
+ip.ihl = 5;
+ip.tot_len = htons(sizeof(ip) + sizeof(tcphdr));
+ip.ttl = 64;
+ip.protocol = IPPROTO_TCP;
+ip.saddr = local_ip;
+ip.daddr = target_ip;
+
+⸻
+
+TCP SYN header
+
+struct tcphdr tcp;
+tcp.source = htons(12345);
+tcp.dest = htons(target_port);
+tcp.seq = rand();
+tcp.syn = 1;
+tcp.window = htons(65535);
+
+⸻
+
+Checksum (important)
+
+You must compute TCP checksum:
+
+tcp.check = checksum((uint16_t*)&tcp, sizeof(tcp));
+ip.check = checksum((uint16_t*)&ip, sizeof(ip));
+
+⸻
+
+📡 5. Raw socket sender
+
+int sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
+int one = 1;
+setsockopt(sock, IPPROTO_IP, IP_HDRINCL, &one, sizeof(one));
+
+⸻
+
+Send loop:
+
+for (uint32_t i = 0; i < RANGE; i++) {
+    uint32_t ip_raw = permute(i);
+    struct in_addr ip = index_to_ip(ip_raw);
+    build_packet(&pkt, ip, port);
+    sendto(sock, &pkt, sizeof(pkt), 0,
+           (struct sockaddr*)&dest, sizeof(dest));
+}
+
+⸻
+
+📥 6. Receiver thread (SYN-ACK listener)
+
+int sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_IP));
+
+Loop:
+
+while (1) {
+    recv(sock, buffer, sizeof(buffer), 0);
+    if (is_syn_ack(buffer)) {
+        printf("OPEN PORT FOUND\n");
+    }
+}
+
+⸻
+
+Detect open port logic:
+
+If you receive:
+
+SYN + ACK
+
+→ port is OPEN
+
+If:
+
+RST
+
+→ port is CLOSED
+
+⸻
+
+⚡ 7. Async threading model
+
+Two threads:
+
+Thread 1 (TX)
+
+void *transmit_thread() {
+    for (;;) {
+        send_packets_as_fast_as_possible();
+    }
+}
+
+⸻
+
+Thread 2 (RX)
+
+void *receive_thread() {
+    while (1) {
+        process_responses();
+    }
+}
+
+No locking between them.
+
+⸻
+
+🔥 8. Why this becomes extremely fast
+
+Because:
+
+❌ You avoid:
+
+* connect()
+* TCP handshake logic
+* per-target state
+* OS firewall tracking
+* DNS resolution
+
+✅ You use:
+
+* raw sockets
+* prebuilt packets
+* stateless iteration
+* CPU-bound loops only
+
+⸻
+
+🧠 9. Real performance trick (the secret sauce)
+
+The biggest optimization is this:
+
+You never allocate per packet.
+
+Instead:
+
+static packet_t pkt;
+
+You just mutate fields:
+
+pkt.ip = new_ip;
+pkt.port = new_port;
+send(sock, &pkt);
+
+No malloc. No memcpy overhead.
+
+⸻
+
+🧭 10. Full minimal scanner (concept version)
+
+int main() {
+    init_socket();
+    pthread_create(&tx, NULL, transmit_thread, NULL);
+    pthread_create(&rx, NULL, receive_thread, NULL);
+    pthread_join(tx, NULL);
+}
+
+⸻
+
+🚀 11. What Masscan adds on top of this
+
+Real systems add:
+
+* CIDR range parser
+* exclusion filters
+* adaptive rate control
+* packet batching
+* better permutation (full multiplicative group mod 2³²)
+* NIC tuning (DPDK/PF_RING)
+* response correlation engine
+
+⸻
+
+⚠️ Important reality
+
+This design is:
+
+* extremely efficient
+* extremely aggressive
+* very noisy on networks
+
+So it’s best treated as:
+
+a high-speed measurement engine, not a casual tool
+
+⸻
+
+🧠 If you want next level
+
+I can take you further into:
+
+🔬 Level 2 (serious engineering)
+
+* ￼ full TCP checksum implementation
+* ￼ real CIDR block mapping engine
+* ￼ perfect permutation (modular arithmetic trick used in ZMap)
+* ￼ packet capture using AF_PACKET vs libpcap differences
+
+⚡ Level 3 (elite)
+
+* ￼ DPDK zero-copy packet engine
+* ￼ kernel bypass architecture
+* ￼ distributed scanning cluster design
+
+
+
