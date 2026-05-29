@@ -1,0 +1,30 @@
+{
+  // Objective-J Runtime
+
+  app: {
+    name: 'Objective-J Web4 Runtime',
+    version: '1.0.0',
+  },
+
+  runtime: {
+    hotReload: true,
+    debug: true,
+    maxWorkers: 8,
+  },
+
+  compiler: {
+    optimize: true,
+    target: 'es2025',
+  },
+
+  web4: {
+    realtimeSync: true,
+    p2p: true,
+    distributedObjects: true,
+  },
+
+  ai: {
+    enabled: true,
+    model: 'lmlm-core',
+  },
+}
