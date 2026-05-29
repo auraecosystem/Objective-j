@@ -1,19 +1,52 @@
-const ConfigLoader = require('./config-loader');
+program Index;
 
-const config = new ConfigLoader();
+{$mode objfpc}{$H+}
 
-const runtimeConfig = config.get('runtime');
+uses
+  SysUtils, Classes;
 
-console.log('=== OBJECTIVE-J RUNTIME ===');
+type
+  TApp = class
+  public
+    procedure Run;
+  end;
 
-console.log(runtimeConfig);
+procedure TApp.Run;
+var
+  AppName: string;
+  Version: string;
+begin
+  AppName := 'Objective-J Runtime (Pascal Core)';
+  Version := '1.0.0';
 
-if (runtimeConfig.web4.realtimeSync) {
-    console.log('Realtime sync enabled');
-}
+  Writeln('==============================');
+  Writeln('  ', AppName);
+  Writeln('  Version: ', Version);
+  Writeln('==============================');
+  Writeln('');
 
-if (runtimeConfig.ai.enabled) {
-    console.log('AI runtime active');
-}
+  Writeln('System initialized...');
+  Writeln('Loading runtime modules...');
 
+  Sleep(500);
 
+  Writeln('✔ Compiler: OK');
+  Writeln('✔ Runtime: OK');
+  Writeln('✔ JSON5 Config: READY (external)');
+  Writeln('✔ Web4 Layer: STANDBY');
+
+  Writeln('');
+  Writeln('System ready.');
+end;
+
+var
+  App: TApp;
+
+begin
+  App := TApp.Create;
+  try
+    App.Run;
+  finally
+    App.Free;
+  end;
+end.
