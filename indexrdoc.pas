@@ -15,3 +15,5 @@ if (runtimeConfig.web4.realtimeSync) {
 if (runtimeConfig.ai.enabled) {
     console.log('AI runtime active');
 }
+
+
