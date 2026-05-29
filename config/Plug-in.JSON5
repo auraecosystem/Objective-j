@@ -1,0 +1,13 @@
+{
+  plugins: [
+    {
+      name: 'web4-sync',
+      enabled: true,
+    },
+
+    {
+      name: 'ai-agent-runtime',
+      enabled: true,
+    },
+  ],
+}
