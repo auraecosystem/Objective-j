@@ -1,0 +1,8 @@
+{
+  "name": "objective-j-web4",
+  "version": "2.0.0",
+  "main": "runtime/vm.js",
+  "dependencies": {
+    "json5": "^2.2.3"
+  }
+}
