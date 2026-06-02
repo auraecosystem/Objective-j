@@ -1,0 +1,22 @@
+{
+  app: {
+    name: "Web4 Objective-J Runtime",
+    version: "1.0.0"
+  },
+
+  runtime: {
+    workers: 4,
+    hotReload: true
+  },
+
+  web4: {
+    p2p: true,
+    distributed: true,
+    realtimeSync: true
+  },
+
+  ai: {
+    enabled: true,
+    model: "lmlm-core"
+  }
+}
