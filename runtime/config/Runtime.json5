@@ -1,0 +1,23 @@
+{
+  runtime: {
+    mode: "web4",
+    strict: true,
+    sandbox: true
+  },
+
+  compiler: {
+    target: "web4-vm",
+    optimize: true
+  },
+
+  network: {
+    distributed: true,
+    mesh: true,
+    p2p: true
+  },
+
+  ai: {
+    enabled: true,
+    hooks: true
+  }
+}
