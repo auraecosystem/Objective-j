@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="60" viewBox="0 0 240 60" role="img" aria-labelledby="title">
+  <title id="title">Objective-J Logo</title>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#00aaff" />
+      <stop offset="1" stop-color="#0066ff" />
+    </linearGradient>
+  </defs>
+  <rect width="240" height="60" rx="8" fill="#0b1220" />
+  <g transform="translate(12,8)">
+    <circle cx="24" cy="22" r="18" fill="url(#g)" />
+    <text x="24" y="28" font-family="Verdana,Arial,sans-serif" font-size="14" fill="#fff" font-weight="700" text-anchor="middle">Obj-J</text>
+  </g>
+  <text x="72" y="36" font-family="Verdana,Arial,sans-serif" font-size="18" fill="#ffffff">Objective-J</text>
+</svg>

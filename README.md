@@ -1,3 +1,5 @@
+![Objective-J logo](assets/logo.svg)
+
 # Objective-J
 
 Welcome to the Objective-J repository by Aura Ecosystem.
@@ -5,6 +7,15 @@ Welcome to the Objective-J repository by Aura Ecosystem.
 ## About
 
 This repository contains Objective-J resources and code. Objective-J is an object-oriented language that compiles to JavaScript, allowing developers to write sophisticated web applications with a syntax similar to Objective-C. It brings powerful OOP capabilities to web development while leveraging the ubiquity of JavaScript.
+
+## Language Composition
+
+This repository's language composition (approximate):
+
+- Objective-J: 82.7%
+- JavaScript: 9.4%
+- Pascal: 6.9%
+- Other: 1%
 
 ## Features
 
@@ -33,7 +44,14 @@ cd Objective-j
 npm install
 ```
 
-### Usage
+## Try the example
+
+We included a small runnable "Hello World" example that mimics compiled Objective-J output. Open the example in your browser:
+
+- `examples/hello/index.html` — double-click to open or serve from a local server
+- `examples/hello/README.md` — instructions and info about the demo
+
+## Usage
 
 ```javascript
 // Example Objective-J code
@@ -59,8 +77,9 @@ npm install
 
 ```
 Objective-j/
+├── assets/           # Images and static assets
 ├── src/              # Source code
-├── examples/         # Example projects
+├── examples/         # Example projects (includes Hello example)
 ├── docs/             # Documentation
 ├── tests/            # Test suite
 └── README.md         # This file
@@ -75,15 +94,6 @@ Additional resources:
 - [API Reference](https://auraecosystem.github.io/Objective-j/docs/api)
 - [Examples & Tutorials](https://auraecosystem.github.io/Objective-j/examples)
 
-## Examples
-
-Check out the `examples/` directory for sample projects demonstrating:
-- Basic class definitions
-- Inheritance and protocols
-- Event handling
-- DOM manipulation
-- Component development
-
 ## Testing
 
 Run the test suite:
@@ -91,25 +101,6 @@ Run the test suite:
 ```bash
 npm test
 ```
-
-## Contributing
-
-Contributions are welcome! We appreciate your interest in improving this project. Here's how you can help:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please ensure your contributions follow our code style and include appropriate tests.
-
-## Code Style
-
-- Follow camelCase for variables and methods
-- Use PascalCase for class names
-- Include JSDoc comments for public APIs
-- Write clear, descriptive commit messages
 
 ## Development
 
@@ -150,17 +141,6 @@ If you have any questions or need help:
 - **Issues**: Open an [issue](https://github.com/auraecosystem/Objective-j/issues) on GitHub
 - **Discussions**: Join our [discussions](https://github.com/auraecosystem/Objective-j/discussions)
 - **Documentation**: Check the [project homepage](https://auraecosystem.github.io/Objective-j/)
-
-## Acknowledgments
-
-Special thanks to all contributors and the open-source community for their support and feedback.
-
-## Community
-
-Join our community and connect with other Objective-J developers:
-- [GitHub Issues](https://github.com/auraecosystem/Objective-j/issues)
-- [GitHub Discussions](https://github.com/auraecosystem/Objective-j/discussions)
-- [Project Homepage](https://auraecosystem.github.io/Objective-j/)
 
 ---
 
