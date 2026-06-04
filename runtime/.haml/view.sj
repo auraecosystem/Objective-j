@@ -9,5 +9,4 @@ const source =
 
 return compileHaml(source);
 ```
-
 }
