@@ -1,0 +1,8 @@
+query GetPublicProfile($id: String!)
+    @auth(level: PUBLIC, insecureReason: "Anyone can see a public profile.") {
+  publicProfile(userId: $id) {
+    name
+    photoUrl
+    bioLine
+  }
+}
