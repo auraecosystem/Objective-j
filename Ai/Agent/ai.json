@@ -1,14 +1,14 @@
 {
-  ai: {
+  "ai": {
     enabled: true,
-    model: "gpt-5",
+    model: "gpt-5 mini",
     mode: "hybrid", // remote + local fallback
 
     memory: {
       enabled: true,
       maxSize: 1000
     },
-    {
+
     safety: {
       sandbox: true
     }
