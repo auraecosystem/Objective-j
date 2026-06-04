@@ -1,5 +1,4 @@
 class Agent {
-
 ```
 constructor(config) {
 
