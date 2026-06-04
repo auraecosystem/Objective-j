@@ -1,5 +1,7 @@
 ![Objective-J logo](assets/logo.svg)
 
+[![Languages](badges/languages.svg)](https://github.com/auraecosystem/Objective-j/blob/main/languages.json)
+
 # Objective-J
 
 Welcome to the Objective-J repository by Aura Ecosystem.
@@ -12,10 +14,54 @@ This repository contains Objective-J resources and code. Objective-J is an objec
 
 This repository's language composition (approximate):
 
-- Objective-J: 82.7%
+- Objective-J: 77.7%
+- Objective-C++-like: 5%
 - JavaScript: 9.4%
 - Pascal: 6.9%
 - Other: 1%
+
+Machine-readable data: `languages.json` at the repository root: https://github.com/auraecosystem/Objective-j/blob/main/languages.json
+
+## About "Objective-C++-like"
+
+Objective-C++-like refers to code and patterns that combine Objective-C–style messaging and object model with C++-style types, idioms, or lower-level constructs adapted for the Objective-J ecosystem. In this repository the label indicates code that:
+
+- Mixes message-based APIs with lower-level or templated C++-style constructs (for example, when interfacing with performance-critical modules or ported native code).
+- Uses performance-oriented or static-like patterns while preserving Objective-J messaging syntax.
+- May require glue or shims to interoperate smoothly with plain Objective-J and JavaScript modules.
+
+Practical implications
+
+- Interoperability: Modules labeled Objective-C++-like often need explicit wrapper layers or conversion utilities to interact with other parts of the codebase.
+- Tooling: These modules may require special handling in tooling (extra parsing, different lint rules, or separate compilation steps).
+- Documentation and examples: Provide small examples showing both the source form and the compiled/shimmed JS form, plus tests covering interoperability edges.
+- When to use: Prefer plain Objective-J for new high-level features. Use Objective-C++-like patterns when performance or existing API compatibility justifies the added complexity.
+
+Example (pseudo-code, illustrative)
+
+```text
+// Pseudo Objective‑C++‑like source
+@implementation FastVector : CPObject
+{
+    CppVector<int> _buf; // conceptual backing buffer
+}
+
+- (void)push:(int)value
+{
+    _buf.push_back(value); // low-level operation handled by backing engine
+}
+
+- (CPNumber)sum
+{
+    return _buf.reduce((acc, v) => acc + v, 0);
+}
+@end
+```
+
+Recommendations
+
+- Document these modules under `docs/` and add examples under `examples/` showing source + compiled/shim output.
+- Add focused tests for boundaries (serialization, API contracts, memory/ownership if relevant).
 
 ## Features
 
@@ -46,10 +92,14 @@ npm install
 
 ## Try the example
 
-We included a small runnable "Hello World" example that mimics compiled Objective-J output. Open the example in your browser:
+We included a small runnable "Hello World" example that compiles a constrained Objective-J-like source file to JavaScript using the included toy compiler.
 
-- `examples/hello/index.html` — double-click to open or serve from a local server
-- `examples/hello/README.md` — instructions and info about the demo
+Build and run the example:
+
+```bash
+npm run build
+# then open examples/hello/index.html in a browser
+```
 
 ## Usage
 
@@ -78,61 +128,44 @@ We included a small runnable "Hello World" example that mimics compiled Objectiv
 ```
 Objective-j/
 ├── assets/           # Images and static assets
+├── scripts/          # Tooling (toy compiler)
 ├── src/              # Source code
 ├── examples/         # Example projects (includes Hello example)
 ├── docs/             # Documentation
-├── tests/            # Test suite
+├── tools/            # Utility scripts
+├── badges/           # Generated badges
+├── .github/          # GitHub workflows
 └── README.md         # This file
-```
-
-## Documentation
-
-For comprehensive documentation, visit the [project homepage](https://auraecosystem.github.io/Objective-j/).
-
-Additional resources:
-- [Language Guide](https://auraecosystem.github.io/Objective-j/docs/guide)
-- [API Reference](https://auraecosystem.github.io/Objective-j/docs/api)
-- [Examples & Tutorials](https://auraecosystem.github.io/Objective-j/examples)
-
-## Testing
-
-Run the test suite:
-
-```bash
-npm test
 ```
 
 ## Development
 
-### Building
+### Building the examples
 
 ```bash
 npm run build
 ```
 
-### Development Server
+### Development server (manual)
+
+You can serve the repository with a simple static server, for example using Python:
 
 ```bash
-npm run dev
+python -m http.server 8000
+# then open http://localhost:8000/examples/hello/index.html
 ```
 
-### Linting
+## Contributing
 
-```bash
-npm run lint
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing.
 
-## Roadmap
+## Code of Conduct
 
-- [ ] Enhanced language features
-- [ ] Performance optimizations
-- [ ] Extended documentation
-- [ ] Community examples
-- [ ] Debugging tools
+Please follow the guidelines in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## License
 
-For license information, please refer to the LICENSE file in the repository.
+For license information, please refer to the LICENSE file in the repository if present.
 
 ## Support
 
