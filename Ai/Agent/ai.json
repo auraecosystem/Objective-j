@@ -8,9 +8,10 @@
       enabled: true,
       maxSize: 1000
     },
-
+    {
     safety: {
       sandbox: true
     }
   }
-}
+},
+
