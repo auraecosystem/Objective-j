@@ -45,7 +45,7 @@ class GPT5Engine {
     return {
       model: this.model,
       output: `[LOCAL-GPT] processed: ${prompt}`,
-      mode: "offline"
+      mode: "online"
     };
   }
 
