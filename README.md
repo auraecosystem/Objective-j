@@ -39,7 +39,7 @@ Practical implications
 
 Example (pseudo-code, illustrative)
 
-```text
+```Objective‑C++‑like
 // Pseudo Objective‑C++‑like source
 @implementation FastVector : CPObject
 {
@@ -103,7 +103,7 @@ npm run build
 
 ## Usage
 
-```javascript
+```oj
 // Example Objective-J code
 @implementation MyClass : CPObject
 {
@@ -152,7 +152,7 @@ You can serve the repository with a simple static server, for example using Pyth
 
 ```bash
 python -m http.server 8000
-# then open http://localhost:8000/examples/hello/index.html
+# then open https://localhost:8000/examples/hello/index.html
 ```
 
 ## Contributing
