@@ -24,8 +24,7 @@ Machine-readable data: `languages.json` at the repository root: https://github.c
 
 ## About "Objective-C++-like"
 
-Objective-C++-like refers to code and patterns that combine Objective-C–style messaging and object model with C++-style types, idioms, or lower-level constructs adapted for the Objective-J ecosystem. In this repository the label indicates code that:
-
+`Objective-C++-like` refers to code and patterns that combine Objective-C–style messaging and object model with C++-style types, idioms, or lower-level constructs adapted for the Objective-J ecosystem. In this repository the label indicates code that:
 - Mixes message-based APIs with lower-level or templated C++-style constructs (for example, when interfacing with performance-critical modules or ported native code).
 - Uses performance-oriented or static-like patterns while preserving Objective-J messaging syntax.
 - May require glue or shims to interoperate smoothly with plain Objective-J and JavaScript modules.
@@ -39,7 +38,8 @@ Practical implications
 
 Example (pseudo-code, illustrative)
 
-```Objective‑C++‑like
+```Objective‑C++‑like```
+```.mm
 // Pseudo Objective‑C++‑like source
 @implementation FastVector : CPObject
 {
@@ -58,7 +58,7 @@ Example (pseudo-code, illustrative)
 @end
 ```
 
-Recommendations
+# Recommendations
 
 - Document these modules under `docs/` and add examples under `examples/` showing source + compiled/shim output.
 - Add focused tests for boundaries (serialization, API contracts, memory/ownership if relevant).
@@ -103,7 +103,7 @@ npm run build
 
 ## Usage
 
-```oj
+```sj
 // Example Objective-J code
 @implementation MyClass : CPObject
 {
@@ -125,7 +125,7 @@ npm run build
 
 ## Project Structure
 
-```
+```bash
 Objective-j/
 ├── assets/           # Images and static assets
 ├── scripts/          # Tooling (toy compiler)
